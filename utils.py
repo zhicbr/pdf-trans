@@ -5,47 +5,50 @@ import time
 import json
 import base64
 import mimetypes
+from datetime import datetime
+from colorama import Fore, Style, init
 
+# Initialize Colorama
+init(autoreset=True)
 
 class Logger:
+    @staticmethod
+    def _format_message(msg_type, msg, color, indent):
+        timestamp = datetime.now().strftime('%H:%M:%S')
+        prefix = "  " * indent
+        return f"{color}{timestamp} {prefix}[{msg_type}] {msg}{Style.RESET_ALL}"
+
     @staticmethod
     def separator(char='-', length=50):
         print(char * length)
 
     @staticmethod
     def info(msg, indent=0):
-        prefix = "  " * indent
-        print(f"{prefix}[INFO]     {msg}")
+        print(Logger._format_message("INFO", msg, Fore.CYAN, indent))
 
     @staticmethod
     def success(msg, indent=0):
-        prefix = "  " * indent
-        print(f"{prefix}[SUCCESS]  {msg}")
+        print(Logger._format_message("SUCCESS", msg, Fore.GREEN, indent))
 
     @staticmethod
     def warning(msg, indent=0):
-        prefix = "  " * indent
-        print(f"{prefix}[WARNING]  {msg}")
+        print(Logger._format_message("WARNING", msg, Fore.YELLOW, indent))
 
     @staticmethod
     def error(msg, indent=0):
-        prefix = "  " * indent
-        print(f"{prefix}[ERROR]    {msg}")
+        print(Logger._format_message("ERROR", msg, Fore.RED, indent))
 
     @staticmethod
     def api_log(msg, indent=0):
-        prefix = "  " * indent
-        print(f"{prefix}[API]      {msg}")
+        print(Logger._format_message("API", msg, Fore.BLUE, indent))
 
     @staticmethod
     def retry_log(msg, indent=0):
-        prefix = "  " * indent
-        print(f"{prefix}[RETRY]    {msg}")
+        print(Logger._format_message("RETRY", msg, Fore.MAGENTA, indent))
 
     @staticmethod
     def critical(msg, indent=0):
-        prefix = "  " * indent
-        print(f"{prefix}[CRITICAL] {msg}")
+        print(Logger._format_message("CRITICAL", msg, Fore.RED + Style.BRIGHT, indent))
 
 
 def ensure_directories(paths):

@@ -6,3 +6,4 @@ tabulate
 openai
 pillow
 requests
+colorama
