@@ -1,0 +1,28 @@
+/Data/
+/output/
+/Trans/
+.idea/
+.trae/
+
+# 忽略 Python 编译缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 忽略虚拟环境
+venv/
+.env/
+.venv/
+
+# 忽略 VSCode 配置（按需）
+.vscode/
+
+# 忽略环境变量文件
+*.env
+
+# 忽略临时文件
+*.log
+*.tmp
+TODO.md
+提示词.md
