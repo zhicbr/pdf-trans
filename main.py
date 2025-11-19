@@ -14,32 +14,48 @@ def pre_flight_checks():
     """执行程序启动前的环境检查"""
     Logger.separator('-', 50)
     print("执行启动前环境检查...")
-    checks_passed = True
+    
+    # 检查 API Keys
+    google_key_ok = config.GOOGLE_API_KEY and config.GOOGLE_API_KEY != "你的_GOOGLE_API_KEY"
+    aliyun_key_ok = config.DASHSCOPE_API_KEY and config.DASHSCOPE_API_KEY != "你的_DASHSCOPE_API_KEY"
+    siliconflow_key_ok = config.QWEN_API_KEY and config.QWEN_API_KEY != "你的_QWEN_API_KEY"
 
-    # 1. 检查 Google API Key
-    api_key = config.GOOGLE_API_KEY
-    if not api_key or api_key == "你的_GOOGLE_API_KEY":
-        Logger.error("检查失败: Google API Key 未配置。")
-        print("请在系统中设置 GOOGLE_API_KEY 环境变量，或者直接在 config.py 文件中修改。")
-        checks_passed = False
-    else:
+    if not google_key_ok and not aliyun_key_ok and not siliconflow_key_ok:
+        Logger.error("检查失败: 所有 API Key (Google, Aliyun, SiliconFlow) 均未配置。")
+        print("请至少在系统中设置一个有效的 API 密钥环境变量（如 GOOGLE_API_KEY），或在 config.py 中修改。")
+        Logger.separator('-', 50)
+        return False
+
+    # 详细报告每个key的状态
+    if google_key_ok:
         Logger.success("检查通过: Google API Key 已配置。")
+    else:
+        Logger.warning("注意: Google API Key 未配置，将依赖备用模型。")
 
-    # 2. 检查网络连接
-    try:
-        response = requests.get(config.GOOGLE_TEST_URL, timeout=10)
-        if response.status_code == 200:
-            Logger.success("检查通过: 网络连接正常，可以访问 Google 服务。")
-        else:
-            Logger.error(f"检查失败: 无法访问 Google 服务，状态码: {response.status_code}")
-            checks_passed = False
-    except requests.exceptions.RequestException as e:
-        Logger.error(f"检查失败: 网络连接异常，无法连接到 {config.GOOGLE_TEST_URL}")
-        print(f"错误详情: {e}")
-        checks_passed = False
+    if aliyun_key_ok:
+        Logger.success("检查通过: Aliyun DashScope API Key 已配置。")
+    else:
+        Logger.warning("注意: Aliyun API Key 未配置，第一备用模型将不可用。")
 
+    if siliconflow_key_ok:
+        Logger.success("检查通过: SiliconFlow API Key 已配置。")
+    else:
+        Logger.warning("注意: SiliconFlow API Key 未配置，第二备用模型将不可用。")
+
+    # 如果配置了Google Key，则检查网络
+    if google_key_ok:
+        Logger.info("正在检查 Google 网络连通性...")
+        try:
+            response = requests.get(config.GOOGLE_TEST_URL, timeout=10)
+            if response.status_code == 200:
+                Logger.success("检查通过: 网络连接正常，可以访问 Google 服务。")
+            else:
+                Logger.warning(f"网络警告: 无法访问 Google 服务 (状态码: {response.status_code})，将依赖备用模型。")
+        except requests.exceptions.RequestException:
+            Logger.warning(f"网络警告: 无法连接到 {config.GOOGLE_TEST_URL}，将依赖备用模型。")
+    
     Logger.separator('-', 50)
-    return checks_passed
+    return True
 
 
 def main():

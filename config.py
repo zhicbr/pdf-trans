@@ -5,6 +5,7 @@ import os
 
 # 1. API Keys (请替换或使用环境变量)
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "你的_GOOGLE_API_KEY")
+DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY", "你的_DASHSCOPE_API_KEY") # 阿里云 DashScope Key
 QWEN_API_KEY = os.getenv("QWEN_API_KEY", "你的_QWEN_API_KEY") # 硅基流动或其他兼容OpenAI的Key
 
 # 2. 路径配置
@@ -14,10 +15,16 @@ OUTPUT_DIR = os.path.join(BASE_DIR, 'output')
 TRANS_DIR = os.path.join(BASE_DIR, 'Trans')
 
 # 3. 模型配置
+# Gemini
 MODEL_GEMINI_PRO = "gemini-2.5-pro" # 优先
 MODEL_GEMINI_FLASH = "gemini-2.5-flash" # 备用
+# Aliyun
+MODEL_ALIYUN_QWEN = "qwen-vl-max" # 阿里云第一备用
+DASHSCOPE_API_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1" # 阿里云地址
+# SiliconFlow
 MODEL_QWEN = "Qwen/QVQ-72B-Preview" # 最终备用
 QWEN_API_URL = "https://api.siliconflow.cn/v1" # 硅基流动地址
+
 
 # 4. 网络与重试配置
 GOOGLE_TEST_URL = "https://www.google.com"
